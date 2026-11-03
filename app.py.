@@ -1,0 +1,183 @@
+import streamlit as st
+import random
+
+# Page configuration
+st.set_page_config(
+    page_title="AI Study Assistant",
+    page_icon="📚",
+    layout="wide"
+)
+
+# Session storage
+if "notes" not in st.session_state:
+    st.session_state.notes = ""
+
+# Application title
+st.title("📚 AI Study Assistant")
+st.subheader("Your Personal Learning Companion")
+
+st.write(
+    "Study smarter, revise faster and improve your learning!"
+)
+
+# Sidebar
+menu = st.sidebar.selectbox(
+    "Choose a Feature",
+    [
+        "Home",
+        "Notes Summarizer",
+        "MCQ Generator",
+        "Flashcards",
+        "Search Notes"
+    ]
+)
+
+# HOME
+if menu == "Home":
+
+    st.header("Welcome to AI Study Assistant!")
+
+    st.write("Your learning tools in one place.")
+
+    st.info("""
+    ✨ Features:
+
+    📝 Summarize study notes
+
+    ❓ Generate practice MCQs
+
+    📖 Create flashcards
+
+    🔍 Search your notes
+    """)
+
+    st.session_state.notes = st.text_area(
+        "Enter or paste your study notes:",
+        value=st.session_state.notes,
+        height=200
+    )
+
+    if st.button("Save Notes"):
+        st.success("Your notes are saved for this session!")
+
+# SUMMARIZER
+elif menu == "Notes Summarizer":
+
+    st.header("📝 Notes Summarizer")
+
+    text = st.text_area("Paste your study notes:")
+
+    if st.button("Summarize"):
+
+        if text.strip():
+
+            sentences = text.split(".")
+
+            summary = sentences[:3]
+
+            st.subheader("Your Summary")
+
+            st.write(". ".join(summary))
+
+        else:
+            st.warning("Please enter your notes!")
+
+# MCQ GENERATOR
+elif menu == "MCQ Generator":
+
+    st.header("❓ MCQ Practice")
+
+    question = st.text_input(
+        "Enter a question:"
+    )
+
+    option1 = st.text_input("Option A")
+    option2 = st.text_input("Option B")
+    option3 = st.text_input("Option C")
+    option4 = st.text_input("Option D")
+
+    correct = st.selectbox(
+        "Select the correct answer:",
+        ["A", "B", "C", "D"]
+    )
+
+    if st.button("Check Answer"):
+
+        answer = {
+            "A": option1,
+            "B": option2,
+            "C": option3,
+            "D": option4
+        }
+
+        st.write("Question:", question)
+
+        st.write("Correct Answer:", answer[correct])
+
+        st.success("Answer displayed!")
+
+# FLASHCARDS
+elif menu == "Flashcards":
+
+    st.header("📖 Flashcard Creator")
+
+    front = st.text_input("Enter Question")
+
+    back = st.text_input("Enter Answer")
+
+    if st.button("Create Flashcard"):
+
+        if front and back:
+
+            st.markdown("### Question")
+
+            st.info(front)
+
+            st.markdown("### Answer")
+
+            st.success(back)
+
+        else:
+            st.warning("Enter both question and answer!")
+
+# SEARCH NOTES
+elif menu == "Search Notes":
+
+    st.header("🔍 Search Your Notes")
+
+    notes = st.text_area(
+        "Paste your notes:",
+        value=st.session_state.notes
+    )
+
+    keyword = st.text_input("Search keyword")
+
+    if st.button("Search"):
+
+        if keyword:
+
+            results = [
+                sentence.strip()
+                for sentence in notes.split(".")
+                if keyword.lower() in sentence.lower()
+            ]
+
+            if results:
+
+                st.subheader("Search Results")
+
+                for result in results:
+                    st.write("•", result)
+
+            else:
+                st.warning("No matching content found.")
+
+        else:
+            st.warning("Enter a keyword!")
+
+# Footer
+st.divider()
+
+st.caption(
+    "AI Study Assistant | Built with Python and Streamlit"
+)
